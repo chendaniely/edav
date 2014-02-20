@@ -30,7 +30,16 @@
 ##'                .Names = c("Admit", "Gender", "Dept"))
 ##' @export
 loadAndParseMixedCSV <- function(file){
-    out <- read.csv(file)
-    print(str(out))
+    out <- read.csv(file, stringsAsFactors=FALSE)
+    out <- within(out,{
+        Dept <- factor(Dept, labels=LETTERS[1:6])
+        Admit <- factor(Admit, labels=c("Admitted", "Rejected"))
+    })
+    temp <- rep(NA, nrow(out))
+    temp[out$Gender == "Male"] <- "Male"
+    temp[out$Gender == "Female"] <- "Female"
+    out$Gender <- factor(temp, levels=c("Male","Female"))
+    print(str(out)) 
+    print(str(temp))
     return(out)
 }
